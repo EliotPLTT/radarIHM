@@ -24,7 +24,7 @@ class App:
         self.maxPoint = maxPoint    #Nombre de point maximal affiché
         self.theta = []             #Coordonées theta des points
         self.r = []                 #Coordonées r des points
-        self.rmax = 1               #Coordonée r maximum affichée
+        self.rmax = 50               #Coordonée r maximum affichée
         self.simulation = simulation
 
         #A but de test uniquement ===# 
@@ -130,13 +130,15 @@ class App:
             return
 
         if ser and ser.in_waiting > 0:
-            ligne = ser.readline().decode('utf-8', errors='ignore').strip()
-        try:
-            donnees = json.loads(ligne) 
-            print(donnees)
-            #Traitement des données a faire
-        except json.JSONDecodeError as e:
-            pass
+            try:
+                ligne = ser.readline().decode('utf-8', errors='ignore').strip()
+                #print(ligne)
+                angle = int(ligne.split(",")[0].strip())
+                distance = float(ligne.split(",")[1].strip())
+                print(angle,distance)
+                self.addOnePoint(deg2rad(angle),distance)
+            except(ValueError):
+                pass
         
         self.root.after(interval_ms, lambda: self.Tick(interval_ms)) #Callback
 
@@ -179,8 +181,8 @@ if __name__ == "__main__":
 
     AppVersion = "1.2"
     AppDev = "Mesner/Poulette"
-    maxPoint = 100
-    portSerie = "COM8"
+    maxPoint = 50
+    portSerie = "COM14"
 
     print(f"RadarTagnan - ver{AppVersion}")
     print(f"Author(s) : {AppDev}")
